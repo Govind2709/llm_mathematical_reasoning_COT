@@ -1,0 +1,95 @@
+{
+  "project": "LLM Mathematical Reasoning: CoMAT + SFT + GRPO",
+  "course": "Advanced Topics in NLP (INFR11287), University of Edinburgh",
+  "semester": "2025-26 Semester 2",
+
+  "part1_comat": {
+    "model": "gpt-4o-mini",
+    "dataset": "mmlu-redux-college_mathematics",
+    "temperature_0.0": {
+      "accuracy": 0.7475,
+      "description": "Greedy decoding (argmax)"
+    },
+    "temperature_0.7": {
+      "accuracy": 0.7071,
+      "description": "Stochastic sampling — lower accuracy due to noise in reasoning chain"
+    },
+    "temperature_0.7_top_p_0.1_max_tokens_4096": {
+      "accuracy": 0.7677,
+      "description": "Best config: constrained nucleus sampling outperforms greedy decoding"
+    },
+    "shapley_values": {
+      "s1_identification_and_definition": 0.036253,
+      "s2_structural_logic_translation": 0.040654,
+      "s3_explicit_factual_representation": 0.032403,
+      "s4_question_formalisation": 0.019201,
+      "note": "s2 has highest marginal contribution despite being 2nd in pipeline"
+    }
+  },
+
+  "part2_sft": {
+    "base_model": "Qwen/Qwen2.5-0.5B",
+    "instruct_model": "Qwen/Qwen2.5-0.5B-Instruct",
+    "training_dataset": "GSM8K",
+    "train_samples": 2700,
+    "val_samples": 300,
+    "test_samples": 100,
+    "epochs": 2,
+    "hardware": "Google Colab T4 GPU (16GB VRAM)",
+    "zero_shot": {
+      "base": 0.12,
+      "instruct": 0.14
+    },
+    "after_sft": {
+      "base": 0.32,
+      "instruct": 0.34
+    },
+    "training_dynamics": {
+      "instruct_val_loss_start": 1.50,
+      "instruct_val_loss_end": 0.575,
+      "instruct_loss_reduction_pct": 62,
+      "base_val_loss_start": 1.90,
+      "base_val_loss_end": 1.00,
+      "base_loss_reduction_pct": 47,
+      "train_val_gap": "< 0.05 (no significant overfitting)"
+    }
+  },
+
+  "part3_grpo": {
+    "base_model": "Qwen/Qwen2.5-0.5B-Instruct",
+    "sft_starting_checkpoint": "Qwen2.5-0.5B-Instruct-sft",
+    "dataset": "GSM8K (500 samples)",
+    "epochs": 1,
+
+    "q4_baseline": {
+      "reward_functions": {
+        "format_reward": 0.5,
+        "correctness_reward": 2.0
+      },
+      "accuracy": 0.32,
+      "answer_phrase_frequency": 0.96,
+      "avg_response_tokens": 116.2,
+      "failure_mode": "Reward hacking — model optimises format over correctness"
+    },
+
+    "q5_improved": {
+      "reward_function": "reasoning_preservation_reward_func",
+      "reward_components": {
+        "robust_correctness": 3.0,
+        "format_compliance": 0.3,
+        "calculation_step_bonus": "up to 0.75 (0.25 per step, capped at 3)",
+        "length_bonus": "0.5 for 40-150 words, 0.2 for 25-39 words",
+        "placeholder_penalty": -2.0
+      },
+      "accuracy": 0.37,
+      "reward_std_dev_range": "1.35-1.57 (sustained — no reward collapse)",
+      "result": "Surpasses SFT baseline (+3pp) and Q4 GRPO (+5pp)"
+    },
+
+    "summary_table": {
+      "SFT Instruct (baseline)": 0.34,
+      "GRPO Q4 (two-function)": 0.32,
+      "GRPO Q5 (reasoning_preservation)": 0.37
+    }
+  }
+}

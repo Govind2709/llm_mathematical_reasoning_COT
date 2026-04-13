@@ -1,0 +1,86 @@
+# ============================================================
+# LLM Mathematical Reasoning — All Hyperparameters
+# ============================================================
+
+# --- Part 1: CoMAT ---
+comat:
+  model: gpt-4o-mini
+  dataset: mmlu-redux-college_mathematics
+  method: comat
+
+  # Best configuration (beats greedy)
+  best:
+    temperature: 0.7
+    top_p: 0.1
+    max_tokens: 4096
+    frequency_penalty: 0.0
+    presence_penalty: 0.0
+
+  # Baseline
+  baseline:
+    temperature: 0.0
+    max_tokens: 2000
+
+# --- Part 2: SFT ---
+sft:
+  models:
+    - Qwen/Qwen2.5-0.5B
+    - Qwen/Qwen2.5-0.5B-Instruct
+
+  dataset:
+    name: GSM8K
+    total_samples: 3000
+    train_samples: 2700       # test_size=0.1 (bug-fixed from 0.9)
+    val_samples: 300
+    test_samples: 100
+
+  training:
+    epochs: 2
+    hardware: T4 GPU (16GB VRAM)
+    tracking: wandb
+
+  lora:
+    r: 8
+    lora_alpha: 64
+    lora_dropout: 0.05
+    bias: none
+    target_modules: [q_proj, k_proj]
+
+# --- Part 3: GRPO ---
+grpo:
+  model: Qwen/Qwen2.5-0.5B-Instruct
+  sft_checkpoint: Qwen2.5-0.5B-Instruct-sft
+  dataset: GSM8K (500 samples)
+
+  training:
+    learning_rate: 2.0e-5
+    per_device_train_batch_size: 4
+    gradient_accumulation_steps: 4
+    num_generations: 4
+    max_prompt_length: 256
+    max_completion_length: 256
+    epochs: 1
+    beta: 0.1         # KL penalty
+    precision: bf16
+
+  lora:
+    r: 8
+    lora_alpha: 64
+    lora_dropout: 0.05
+    bias: none
+    target_modules: [q_proj, k_proj]
+
+  # Q4 reward weights
+  q4_rewards:
+    format: 0.5
+    correctness: 2.0
+
+  # Q5 reward weights (improved)
+  q5_rewards:
+    robust_correctness: 3.0
+    format_compliance: 0.3
+    calc_step_bonus_per_step: 0.25
+    calc_step_bonus_cap: 0.75
+    length_bonus_40_150_words: 0.5
+    length_bonus_25_39_words: 0.2
+    placeholder_penalty: -2.0

@@ -1,0 +1,59 @@
+# === API KEYS & SECRETS ===
+.env
+*.env
+.env.*
+!.env.example
+
+# === MODEL CHECKPOINTS (too large for GitHub) ===
+checkpoints/
+*.bin
+*.safetensors
+*.pt
+*.pth
+adapter_model/
+adapter_config.json
+
+# === OUTPUTS & RESULTS (raw) ===
+outputs/
+final_results/
+wandb/
+
+# === DATA ===
+dataset/
+data/raw/
+*.csv
+!results/metrics.json
+
+# === NOTEBOOKS — EXECUTION STATE ===
+.ipynb_checkpoints/
+*/.ipynb_checkpoints/
+
+# === PYTHON ===
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+.eggs/
+venv/
+env/
+.venv/
+
+# === IDE ===
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# === GOOGLE COLAB ===
+drive/
+content/
+
+# === LOGS ===
+*.log
+logs/
