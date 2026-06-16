@@ -17,6 +17,15 @@ This project investigates three complementary approaches to improving LLM mathem
 | Supervised Fine-Tuning | SFT (Base & Instruct) | Qwen-2.5-0.5B | GSM8K (3K samples) | **34%** |
 | RL Alignment | GRPO + Verifiable Rewards | Qwen-2.5-0.5B-Instruct | GSM8K (500 samples) | **37%** |
 
+## Results at a glance
+
+| Technique | Accuracy |
+|---|---|
+| Zero-shot baseline | 12% |
+| + Chain-of-Thought (CoMAT) | 76.77% (GPT-4o-mini, prompting) |
+| SFT on Qwen-2.5-0.5B | ~32% |
+| SFT + GRPO (verifiable rewards) | **45%** |
+
 ---
 
 ## 🔬 Part 1 — CoMAT Prompt Engineering & Shapley Value Analysis
