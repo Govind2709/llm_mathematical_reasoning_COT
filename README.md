@@ -322,4 +322,4 @@ python evaluation/main.py \
 
 **Govind**  
 MSc Data Science, University of Edinburgh  
-[LinkedIn](https://linkedin.com/in/yourprofile) · [GitHub](https://github.com/yourusername)
+[LinkedIn](https://www.linkedin.com/in/govind-saraswat-7001841aa/)
