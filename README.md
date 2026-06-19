@@ -320,6 +320,6 @@ python evaluation/main.py \
 
 ## 🧑‍💻 Author
 
-**[Your Name]**  
+**Govind**  
 MSc Data Science, University of Edinburgh  
 [LinkedIn](https://linkedin.com/in/yourprofile) · [GitHub](https://github.com/yourusername)
